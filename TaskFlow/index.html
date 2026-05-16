@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TaskFlow Pro — Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">TF</div>
+          <h1>TaskFlow Pro</h1>
+        </div>
+        <nav class="nav-tabs">
+          <button class="tab active" data-target="dashboard">Dashboard</button>
+          <button class="tab" data-target="tasks">Gestor de Tareas</button>
+          <button class="tab" data-target="history">Historial</button>
+        </nav>
+        <div class="sidebar-footer">
+          <small>INACAP Maipú — Evaluación</small>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="search-area">
+            <input id="globalSearch" type="search" placeholder="Buscar tareas..." />
+          </div>
+          <div class="actions">
+            <button id="newTaskBtn" class="btn primary">Nueva Tarea</button>
+          </div>
+        </header>
+
+        <section id="panels">
+          <!-- Dashboard Panel -->
+          <section id="dashboard" class="panel">
+            <h2>Dashboard</h2>
+            <div class="cards-grid">
+              <div class="card info-card">
+                <div class="card-title">Total Tareas</div>
+                <div id="counterTotal" class="card-value">0</div>
+              </div>
+              <div class="card info-card">
+                <div class="card-title">Pendientes</div>
+                <div id="counterPending" class="card-value">0</div>
+              </div>
+              <div class="card info-card">
+                <div class="card-title">Completadas</div>
+                <div id="counterCompleted" class="card-value">0</div>
+              </div>
+              <div class="card info-card highlight">
+                <div class="card-title">Críticas (Alta)</div>
+                <div id="counterHigh" class="card-value">0</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="dashboard-actions">
+                <button id="clearCompletedBtn" class="btn danger">Vaciar completadas</button>
+              </div>
+              <div id="bulkActionsDashboard" class="bulk-actions hidden">
+                <div id="selectedCountDashboard">0 seleccionadas</div>
+                <div class="bulk-buttons">
+                  <button id="bulkMarkCompleteDashboard" class="btn">Marcar como completado</button>
+                  <button id="bulkSendTrashDashboard" class="btn danger">Eliminar (papelera)</button>
+                  <button id="bulkCancelDashboard" class="btn">Cancelar</button>
+                </div>
+              </div>
+              <ul id="recentList" class="recent-list task-list" aria-live="polite"></ul>
+            </div>
+          </section>
+
+          <!-- Tasks Panel -->
+          <section id="tasks" class="panel hidden">
+            <h2>Gestor de Tareas</h2>
+            <div class="filters">
+              <label>Prioridad:
+                <select id="filterPriority">
+                  <option value="all">Todas</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Media">Media</option>
+                  <option value="Baja">Baja</option>
+                </select>
+              </label>
+              <div class="status-filters">
+                <button class="status-filter active" data-status="all">Todas</button>
+                <button class="status-filter" data-status="pending">Pendientes</button>
+                <button class="status-filter" data-status="completed">Completadas</button>
+              </div>
+            </div>
+
+            <div id="bulkActions" class="bulk-actions hidden">
+              <div id="selectedCount">0 seleccionadas</div>
+              <div class="bulk-buttons">
+                <button id="bulkMarkComplete" class="btn">Marcar como completado</button>
+                <button id="bulkSendTrash" class="btn danger">Eliminar (papelera)</button>
+                <button id="bulkCancel" class="btn">Cancelar</button>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <ul id="taskList" class="task-list" aria-live="polite"></ul>
+            </div>
+          </section>
+
+          <!-- History Panel -->
+          <section id="history" class="panel hidden">
+            <h2>Historial / Mantenimiento</h2>
+            <div class="panel-body">
+              <div class="history-actions">
+                <button id="bulkClear" class="btn danger">Vaciar todo (archivadas)</button>
+                <button id="clearRemoved" class="btn">Limpiar eliminadas</button>
+              </div>
+              <h3>Archivadas</h3>
+              <ul id="archivedList" class="task-list"></ul>
+              <h3>Eliminadas recientemente</h3>
+              <ul id="removedList" class="task-list"></ul>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal (hidden) -->
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h3>Crear Nueva Tarea</h3>
+          <button id="closeModal" class="close">✕</button>
+        </header>
+        <form id="taskForm" class="modal-form" novalidate>
+          <label>Título
+            <input id="taskTitle" name="title" type="text" required minlength="5" />
+          </label>
+          <label>Descripción
+            <textarea id="taskDesc" name="description" rows="4"></textarea>
+          </label>
+          <label>Prioridad
+            <select id="taskPriority" name="priority">
+              <option value="Alta">Alta</option>
+              <option value="Media" selected>Media</option>
+              <option value="Baja">Baja</option>
+            </select>
+          </label>
+          <label>Categoría
+            <select id="taskCategory" name="category">
+              <option value="Trabajo">Trabajo</option>
+              <option value="Estudio">Estudio</option>
+              <option value="Personal">Personal</option>
+            </select>
+          </label>
+          <label>Fecha límite
+            <input id="taskDue" name="dueDate" type="date" />
+          </label>
+          <div class="preview-area">
+            <div class="preview-label">Vista previa</div>
+            <div id="previewBadge" class="preview-badge"></div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn" id="cancelBtn">Cancelar</button>
+            <button type="submit" class="btn primary">Guardar Tarea</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
